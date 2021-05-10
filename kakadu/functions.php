@@ -7,10 +7,16 @@ load_theme_textdomain( 'kakadu', get_template_directory() . '/languages' );
 function kakadu_setup(){
    
     wp_enqueue_style('style', get_stylesheet_uri(), NULL, microtime(), 'all');
-    wp_enqueue_style('glider', 'https://cdn.jsdelivr.net/npm/glider-js@1/glider.min.css');
     wp_enqueue_style('google-fonts', '//fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700;1,900&display=swap');
     wp_enqueue_style('andbank', get_theme_file_uri( '/css/andbank.css' ), NULL, microtime(), 'all');
-    wp_enqueue_script('main', get_theme_file_uri( '/js/main.js' ), NULL, microtime(), true);
+    wp_enqueue_style('custom', get_theme_file_uri( '/css/custom.css' ), NULL, microtime(), 'all');
+    // wp_enqueue_script( 'main', get_template_directory_uri() . '/js/main.js', array(), false, true );
+    wp_enqueue_script( 'main', 'https://siteguy.dev/projects/andbank/js/main.js', null, null, true );
+    
+    
+    
+    
+    
     
     
 }
@@ -23,26 +29,61 @@ function kakadu_init() {
     add_theme_support( 'post-thumbnails');
     add_theme_support( 'title-tag');
     add_theme_support( 'html5',
-    array('comment-list', 'comment-form', 'search-form')    
+    array('comment-list', 'comment-form', 'search-form', 'navigation-widgets')    
     );
+
+    // Add theme support for selective refresh for widgets.
+		add_theme_support( 'customize-selective-refresh-widgets' );
+
+		// Add support for Block Styles.
+		add_theme_support( 'wp-block-styles' );
+
+		// Add support for full and wide align images.
+		add_theme_support( 'align-wide' );
+
+		// Add support for editor styles.
+		add_theme_support( 'editor-styles' );
+
+		// Enqueue editor styles.
+		add_editor_style( 'style-editor.css' );
+
+        // Add support for responsive embedded content.
+		add_theme_support( 'responsive-embeds' );
+
+		// Add support for custom line height.
+		add_theme_support( 'custom-line-height' );
 }
 
 add_action( 'after_setup_theme', 'kakadu_init');
 
-//LOGO MARKUP
+add_filter( 'wp_check_filetype_and_ext', function($data, $file, $filename, $mimes) {
+  $filetype = wp_check_filetype( $filename, $mimes );
+  return [
+      'ext'             => $filetype['ext'],
+      'type'            => $filetype['type'],
+      'proper_filename' => $data['proper_filename']
+  ];
 
-function kakadu_custom_logo_setup() {
- $defaults = array(
- 'height'      => 50,
- 'width'       => 104,
- 'flex-height' => true,
- 'flex-width'  => true,
- 'header-text' => array( 'site-title', 'site-description' ),
-'unlink-homepage-logo' => true, 
- );
- add_theme_support( 'custom-logo', $defaults );
+}, 10, 4 );
+
+function cc_mime_types( $mimes ){
+  $mimes['svg'] = 'image/svg+xml';
+  return $mimes;
 }
-add_action( 'after_setup_theme', 'kakadu_custom_logo_setup' );
+add_filter( 'upload_mimes', 'cc_mime_types' );
+
+function fix_svg() {
+  echo '<style type="text/css">
+        .attachment-266x266, .thumbnail img {
+             width: 100% !important;
+             height: auto !important;
+        }
+        </style>';
+}
+add_action( 'admin_head', 'fix_svg' );
+
+
+
 
 // ADDING CUSTOM MENU
 
@@ -56,6 +97,411 @@ function kakadu_menus() {
    );
  }
  add_action( 'init', 'kakadu_menus' );
+
+ //LOGO MARKUP
+
+function kakadu_custom_logo_setup() {
+ $defaults = array(
+ 'height'      => 100,
+ 'width'       => 700,
+ 'flex-height' => true,
+ 'flex-width'  => true,
+ 'header-text' => array( 'site-title', 'site-description' ),
+'unlink-homepage-logo' => true, 
+ );
+ add_theme_support( 'custom-logo', $defaults );
+}
+add_action( 'after_setup_theme', 'kakadu_custom_logo_setup' );
+
+
+// ADDING CUSTOM POSTS
+
+function kakadu_antes(){
+    register_post_type( 'antes', 
+     array(
+        'rewrite' => array('slug' => 'antes'),
+        'labels' => array(
+            'name' => '00. Anteriores',
+            'singular_name' => 'Anteriores',
+            'add_new_name' => "Adicionar novo Anteriores",
+            'edit_item' => 'Edit Anteriores'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_antes');
+
+function kakadu_indice(){
+    register_post_type( 'indice', 
+     array(
+        'rewrite' => array('slug' => 'indice'),
+        'labels' => array(
+            'name' => '00. Índice',
+            'singular_name' => 'Índice',
+            'add_new_name' => "Adicionar novo Índice",
+            'edit_item' => 'Edit Índice'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_indice');
+
+function kakadu_header(){
+    register_post_type( 'cabecalho', 
+     array(
+        'rewrite' => array('slug' => 'cabecalho'),
+        'labels' => array(
+            'name' => '00. Header',
+            'singular_name' => 'Header',
+            'add_new_name' => "Adicionar novo Header",
+            'edit_item' => 'Edit Header'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_header');
+
+
+function kakadu_editorial(){
+    register_post_type( 'editorial', 
+     array(
+        'rewrite' => array('slug' => 'editorial'),
+        'labels' => array(
+            'name' => '02. Carta Editorial',
+            'singular_name' => 'Carta Editorial',
+            'add_new_name' => "Adicionar nova Carta Editorial",
+            'edit_item' => 'Edit Carta Editorial'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_editorial');
+
+function kakadu_mercado(){
+    register_post_type( 'mercado', 
+     array(
+        'rewrite' => array('slug' => 'mercado'),
+        'labels' => array(
+            'name' => '03. De Olho no Mercado',
+            'singular_name' => 'De Olho no Mercado',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit De Olho no Mercado'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_mercado');
+
+function kakadu_fique(){
+    register_post_type( 'fique', 
+     array(
+        'rewrite' => array('slug' => 'fique'),
+        'labels' => array(
+            'name' => '04. Fique por Dentro',
+            'singular_name' => 'Fique por Dentro',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit Fique por Dentro'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_fique');
+
+function kakadu_aniversario(){
+    register_post_type( 'aniversario', 
+     array(
+        'rewrite' => array('slug' => 'aniversario'),
+        'labels' => array(
+            'name' => '05. Aniversariantes',
+            'singular_name' => 'Aniversariantes',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit Aniversariantes'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_aniversario');
+
+function kakadu_porai(){
+    register_post_type( 'porai', 
+     array(
+        'rewrite' => array('slug' => 'porai'),
+        'labels' => array(
+            'name' => '06. Por Aí',
+            'singular_name' => 'Por Aí',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit Por Aí'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_porai');
+
+function kakadu_conexao(){
+    register_post_type( 'conexao', 
+     array(
+        'rewrite' => array('slug' => 'conexao'),
+        'labels' => array(
+            'name' => '07. Conexão',
+            'singular_name' => 'Conexão',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit Conexão'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_conexao');
+
+function kakadu_bemestar(){
+    register_post_type( 'bemestar', 
+     array(
+        'rewrite' => array('slug' => 'bemestar'),
+        'labels' => array(
+            'name' => '08. Bem-Estar',
+            'singular_name' => 'Bem-Estar',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit Bem-Estar'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_bemestar');
+
+function kakadu_gente(){
+    register_post_type( 'gente', 
+     array(
+        'rewrite' => array('slug' => 'gente'),
+        'labels' => array(
+            'name' => '09. Gente Interessante',
+            'singular_name' => 'Gente Interessante',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit Gente Interessante'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_gente');
+
+function kakadu_mundo(){
+    register_post_type( 'mundo', 
+     array(
+        'rewrite' => array('slug' => 'mundo'),
+        'labels' => array(
+            'name' => '10. Anbank no Mundo',
+            'singular_name' => 'Anbank no Mundo',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit Anbank no Mundo'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_mundo');
+
+function kakadu_mensagem(){
+    register_post_type( 'mensagem', 
+     array(
+        'rewrite' => array('slug' => 'mensagem'),
+        'labels' => array(
+            'name' => '11. Mensagem',
+            'singular_name' => 'Mensagem',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit Mensagem'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_mensagem');
+
+function kakadu_aberta(){
+    register_post_type( 'aberta', 
+     array(
+        'rewrite' => array('slug' => 'aberta'),
+        'labels' => array(
+            'name' => '12. Seção Aberta',
+            'singular_name' => 'Seção Aberta',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit Seção Aberta'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_aberta');
+
+function kakadu_off(){
+    register_post_type( 'off', 
+     array(
+        'rewrite' => array('slug' => 'off'),
+        'labels' => array(
+            'name' => '13. Momento OFF',
+            'singular_name' => 'Momento OFF',
+            'add_new_name' => "Adicionar nova matéria",
+            'edit_item' => 'Edit Momento OFF'
+        ),
+        'menu-icon' => 'dashicons-heart',
+        'public' => true,
+        'has_archives' => true,
+        'taxonomies' => array('post_tag','category'),
+        'supports' => array(
+            'title', 'thumbnail', 'editor', 'excerpt', 'comments'
+        )
+
+
+     ) 
+    );
+}
+
+add_action( 'init', 'kakadu_off');
+
+// ADD IMAGE FILTER
+
+
+function kakadu_add_image_class ($class){
+    $class .= ' img-fluid';
+    return $class;
+    }
+
+    add_filter('get_image_tag_class','kakadu_add_image_class');
+
 
 function kakadu_copyright() {
 global $wpdb;
@@ -78,3 +524,46 @@ $output = $copyright;
 }
 return $output;
 }
+
+
+// Callback function to insert 'styleselect' into the $buttons array
+function my_mce_buttons_2( $buttons ) {
+	array_unshift( $buttons, 'styleselect' );
+	return $buttons;
+}
+// Register our callback to the appropriate filter
+add_filter('mce_buttons_2', 'my_mce_buttons_2');
+
+// Callback function to filter the MCE settings
+function my_mce_before_init_insert_formats( $init_array ) {  
+	// Define the style_formats array
+	$style_formats = array(  
+		// Each array child is a format with it's own settings
+		array(  
+			'title' => 'BQ Estilo Preto',  
+			'block' => 'div',  
+			'classes' => 'bg-quotes2',
+			'wrapper' => true,
+		), 
+        array(  
+			'title' => 'BQ Estilo Vermelho',  
+			'block' => 'div',  
+			'classes' => 'bg-quotes',
+			'wrapper' => true,
+		), 
+        array(  
+            'title' => 'BQ Texto',  
+            'block' => 'blockquote',  
+            'classes' => 'blockquote',
+            'wrapper' => false,
+        ),
+	);  
+	// Insert the array, JSON ENCODED, into 'style_formats'
+	$init_array['style_formats'] = json_encode( $style_formats );  
+	
+	return $init_array;  
+  
+} 
+// Attach callback to 'tiny_mce_before_init' 
+add_filter( 'tiny_mce_before_init', 'my_mce_before_init_insert_formats' );
+

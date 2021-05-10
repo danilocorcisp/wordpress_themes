@@ -10,7 +10,9 @@
         <meta property="og:url" content="https://revista.andbank.com.br/" />
         <meta
             property="og:image"
-            content="https://siteguy.dev/wp-content/uploads/2021/02/siteguy_og.jpg"
+            content=""
         />
+
+         
 
         <?php wp_head(  ); ?>
