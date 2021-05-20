@@ -43,7 +43,22 @@ tr {
 }
 
 .gallery-caption {
-    padding-right: 16rem;
+    padding-right: 0 !important;
+}
+
+figcaption {
+    font-size: 14px;
+    font-style: italic;
+    color: #b7b7b7;
+    text-align: center;
+}
+
+figure {
+    display: block;
+}
+
+.align-none {
+    text-align: center !important;
 }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
@@ -107,12 +122,12 @@ tr {
 .blockquote p {
     max-width: 100% !important;
     color: #ffffff !important;
-    font-size: 56px !important;
-    line-height: 61px !important;
+    font-size: 26px !important;
+    line-height: 31px !important;
     font-weight: 800 !important;
     font-style: italic !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin-left: auto;
+    margin-right: auto;
     display: block !important;
     text-align: left !important;
 }

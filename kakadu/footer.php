@@ -2,7 +2,7 @@
 
 
     <?php footer_text(); ?>
-     <script type="text/javascript" src="https://siteguy.dev/projects/andbank/js/main.js"></script>
+     <script type="text/javascript" src="http://www.marqueterie.com.br/andbank/js/main.js"></script>
      
      
 

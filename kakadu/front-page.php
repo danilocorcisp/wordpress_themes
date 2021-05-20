@@ -94,7 +94,7 @@
                                     ?> 
                 <li class="anteriores">                 
                   
-    <a href="/projects/andbank/antes/edicoes-anteriores"><span class="issues">Edições Anteriores</span></a>
+    <a href="/andbank/antes/edicoes-anteriores"><span class="issues">Edições Anteriores</span></a>
 
 
                 </li>

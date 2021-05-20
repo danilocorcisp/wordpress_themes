@@ -1,6 +1,7 @@
 <?php
 
 load_theme_textdomain( 'kakadu', get_template_directory() . '/languages' );
+show_admin_bar( false );
 
 // ADDING CSS AND JS
 
@@ -11,7 +12,7 @@ function kakadu_setup(){
     wp_enqueue_style('andbank', get_theme_file_uri( '/css/andbank.css' ), NULL, microtime(), 'all');
     wp_enqueue_style('custom', get_theme_file_uri( '/css/custom.css' ), NULL, microtime(), 'all');
     // wp_enqueue_script( 'main', get_template_directory_uri() . '/js/main.js', array(), false, true );
-    wp_enqueue_script( 'main', 'https://siteguy.dev/projects/andbank/js/main.js', null, null, true );
+    wp_enqueue_script( 'main', 'http://www.marqueterie.com.br/andbank/js/main.js', null, null, true );
     
     
     
@@ -38,8 +39,8 @@ function kakadu_init() {
 		// Add support for Block Styles.
 		add_theme_support( 'wp-block-styles' );
 
-		// Add support for full and wide align images.
-		add_theme_support( 'align-wide' );
+		// // Add support for full and wide align images.
+		// add_theme_support( 'align-wide' );
 
 		// Add support for editor styles.
 		add_theme_support( 'editor-styles' );
@@ -81,6 +82,71 @@ function fix_svg() {
         </style>';
 }
 add_action( 'admin_head', 'fix_svg' );
+
+// disable srcset on frontend
+function disable_wp_responsive_images() {
+	return 1;
+}
+add_filter('max_srcset_image_width', 'disable_wp_responsive_images');
+
+
+function html5_insert_image( $html, $id, $caption, $title, $align, $url, $size, $alt ) {
+  $src  = wp_get_attachment_image_src( $id, $size, false );
+  $html5 = "<figure id=\"post-$id media-$id\" class=\"align-$align\">";
+
+  if ( $url ) {
+    $html5 .= "<a href=\"$url\" class=\"image-link\"><img src=\"$src[0]\" alt=\"$alt\" /></a>";
+  } else {
+    $html5 .= "<img src=\"$src[0]\" alt=\"$alt\" />";
+  }
+
+  if ( $caption ) {
+    $html5 .= "<figcaption>$caption</figcaption>";
+  }
+
+  $html5 .= "</figure>";
+  return $html5;
+}
+add_filter( 'image_send_to_editor', 'html5_insert_image', 10, 9 );
+
+// function html5_insert_image($html, $id, $caption, $title, $align, $url) {
+//   $html5 = "<figure id='post-$id media-$id' class='align-$align'>";
+//   $html5 .= "<img src='$url' alt='$title' />";
+//   if ($caption) {
+//     $html5 .= "<figcaption>$caption</figcaption>";
+//   }
+//   $html5 .= "</figure>";
+//   return $html5;
+// }
+// add_filter( 'image_send_to_editor', 'html5_insert_image', 10, 9 );
+
+// // removing caption
+
+// add_shortcode( 'wp_caption', 'fixed_img_caption_shortcode' );
+// add_shortcode( 'caption', 'fixed_img_caption_shortcode' );
+
+// function fixed_img_caption_shortcode($attr, $content = null) {
+// if ( ! isset( $attr['caption'] ) ) {
+// if ( preg_match( '#((?:<a [^>]+>\s*)?<img [^>]+>(?:\s*</a>)?)(.*)#is', $content, $matches ) ) {
+//      $content = $matches[1];
+//      $attr['caption'] = trim( $matches[2] );
+//      }
+//  }
+//  $output = apply_filters( 'img_caption_shortcode', '', $attr, $content );
+//      if ( $output != '' )
+//      return $output;
+//  extract( shortcode_atts(array(
+//  'id'      => '',
+//  'align'   => 'alignnone',
+//  'width'   => '',
+//  'caption' => ''
+//  ), $attr));
+//  if ( 1 > (int) $width || empty($caption) )
+//  return $content;
+//  if ( $id ) $id = 'id="' . esc_attr($id) . '" ';
+//  return '<div ' . $id . 'class="wp-caption ' . esc_attr($align) . '" >' 
+//  . do_shortcode( $content ) . '<p class="wp-caption-text">' . $caption . '</p></div>';
+//  }
 
 
 
